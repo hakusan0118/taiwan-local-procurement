@@ -44,10 +44,10 @@ def is_in_scope(unit_id: str, prefix: str) -> bool:
     return unit_id == prefix or unit_id.startswith(prefix + ".")
 
 
-def iter_dates(year: int):
-    current = dt.date(year, 1, 1)
-    end = dt.date(year + 1, 1, 1)
-    while current < end:
+def iter_dates(year: int, start_date: dt.date | None = None, end_date: dt.date | None = None):
+    current = start_date or dt.date(year, 1, 1)
+    end = end_date or dt.date(year, 12, 31)
+    while current <= end:
         yield current
         current += dt.timedelta(days=1)
 
@@ -66,14 +66,28 @@ def safe_name(record: dict) -> str:
     return f"{date}_{unit}_{job}.json"
 
 
-def collect(year: int, root: Path, prefix: str, delay: float, attempts: int) -> None:
+def collect(
+    year: int,
+    root: Path,
+    prefix: str,
+    delay: float,
+    attempts: int,
+    start_date: dt.date | None = None,
+    end_date: dt.date | None = None,
+) -> None:
+    range_start = start_date or dt.date(year, 1, 1)
+    range_end = end_date or dt.date(year, 12, 31)
+    if range_start.year != year or range_end.year != year:
+        raise ValueError("開始與結束日期必須位於指定年度")
+    if range_start > range_end:
+        raise ValueError("開始日期不得晚於結束日期")
     year_root = root / "raw" / "hualien" / str(year)
     daily_dir = year_root / "daily"
     tender_dir = year_root / "tenders"
     errors: list[dict[str, str]] = []
     decisions: list[dict] = []
 
-    for index, day in enumerate(iter_dates(year), 1):
+    for index, day in enumerate(iter_dates(year, range_start, range_end), 1):
         stamp = day.strftime("%Y%m%d")
         path = daily_dir / f"{stamp}.json"
         try:
@@ -143,6 +157,8 @@ def collect(year: int, root: Path, prefix: str, delay: float, attempts: int) -> 
     write_json(year_root / "errors.json", errors)
     write_json(year_root / "manifest.json", {
         "year": year,
+        "start_date": range_start.isoformat(),
+        "end_date": range_end.isoformat(),
         "scope_unit_prefix": prefix,
         "announcement_type": "決標公告",
         "decision_count": len(decisions),
@@ -159,8 +175,13 @@ def main() -> None:
     parser.add_argument("--unit-prefix", default="3.76.55")
     parser.add_argument("--delay", type=float, default=1.5)
     parser.add_argument("--attempts", type=int, default=5)
+    parser.add_argument("--start-date", type=dt.date.fromisoformat)
+    parser.add_argument("--end-date", type=dt.date.fromisoformat)
     args = parser.parse_args()
-    collect(args.year, args.data_root, args.unit_prefix, args.delay, args.attempts)
+    collect(
+        args.year, args.data_root, args.unit_prefix, args.delay, args.attempts,
+        args.start_date, args.end_date,
+    )
 
 
 if __name__ == "__main__":
