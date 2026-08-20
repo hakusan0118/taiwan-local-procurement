@@ -1,0 +1,69 @@
+name: 整理花蓮決標資料
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 要整理的年度
+        required: true
+        default: "2023"
+        type: choice
+        options:
+          - "2010"
+          - "2023"
+          - "both"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hualien-procurement-data
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 選擇年度
+        id: years
+        shell: bash
+        run: |
+          if [ "${{ inputs.year }}" = "both" ]; then
+            echo "list=2010 2023" >> "$GITHUB_OUTPUT"
+          else
+            echo "list=${{ inputs.year }}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: 低頻率下載並快取
+        shell: bash
+        run: |
+          for year in ${{ steps.years.outputs.list }}; do
+            python scripts/fetch_procurement.py --year "$year"
+          done
+      - name: 建立跨年度 CSV
+        run: python scripts/build_exports.py --years ${{ steps.years.outputs.list }}
+      - name: 上傳本次成果
+        uses: actions/upload-artifact@v4
+        with:
+          name: hualien-procurement-${{ inputs.year }}
+          path: |
+            data/raw/hualien/**
+            data/processed/hualien/*.csv
+          retention-days: 30
+      - name: 提交可重現資料成果
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f -- data/raw/hualien/*/manifest.json data/raw/hualien/*/errors.json data/raw/hualien/*/decision_index.json
+          git add -- data/processed/hualien/*.csv
+          if git diff --cached --quiet; then
+            echo "沒有資料異動"
+          else
+            git commit -m "data: update Hualien procurement ${{ inputs.year }}"
+            git push
+          fi
