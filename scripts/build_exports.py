@@ -58,13 +58,36 @@ def detail_for_record(payload: dict, date: object, filename: object) -> dict:
 
 def winners(detail: dict, brief: dict) -> list[tuple[str, str]]:
     found: list[tuple[str, str]] = []
+
+    def add(name: object, vendor_id: object = "") -> None:
+        clean_name = str(name).strip()
+        clean_id = str(vendor_id).strip()
+        if not clean_name:
+            return
+        for index, (existing_name, existing_id) in enumerate(found):
+            if existing_name == clean_name:
+                if not existing_id and clean_id:
+                    found[index] = (existing_name, clean_id)
+                return
+        found.append((clean_name, clean_id))
+
+    # 以「決標品項:第N品項:得標廠商N」為主要來源；不能用字串包含判斷，
+    # 因為「未得標廠商」也包含「得標廠商」四字。
     for key, value in detail.items():
-        if "得標廠商" in key and key.endswith(("廠商名稱", "得標廠商")) and value:
+        is_winner_section = bool(re.search(r"(?:^|:)得標廠商\d*(?::|$)", key))
+        is_loser_section = bool(re.search(r"(?:^|:)未得標廠商\d*(?::|$)", key))
+        if is_winner_section and not is_loser_section and key.endswith(("廠商名稱", "得標廠商")) and value:
             prefix = key.rsplit(":", 1)[0]
             vendor_id = str(detail.get(prefix + ":廠商代碼", "")).strip()
-            pair = (str(value).strip(), vendor_id)
-            if pair[0] and pair not in found:
-                found.append(pair)
+            add(value, vendor_id)
+
+    # 部分公告只在投標廠商區標示「是否得標＝是」。
+    if not found:
+        for key, value in detail.items():
+            if key.endswith(":是否得標") and str(value).strip() == "是":
+                prefix = key.rsplit(":", 1)[0]
+                add(detail.get(prefix + ":廠商名稱", ""), detail.get(prefix + ":廠商代碼", ""))
+
     if not found:
         companies = brief.get("companies", {}) if isinstance(brief, dict) else {}
         names = companies.get("names", []) if isinstance(companies, dict) else []
@@ -72,8 +95,13 @@ def winners(detail: dict, brief: dict) -> list[tuple[str, str]]:
         name_keys = companies.get("name_key", {}) if isinstance(companies, dict) else {}
         for index, name in enumerate(names if isinstance(names, list) else []):
             paths = name_keys.get(name, []) if isinstance(name_keys, dict) else []
-            if any("得標廠商" in str(path) for path in paths):
-                found.append((str(name).strip(), str(ids[index]).strip() if index < len(ids) else ""))
+            winner_path = any(
+                re.search(r"(?:^|:)得標廠商\d*(?::|$)", str(path))
+                and not re.search(r"(?:^|:)未得標廠商\d*(?::|$)", str(path))
+                for path in paths
+            )
+            if winner_path:
+                add(name, ids[index] if index < len(ids) else "")
     return found
 
 
