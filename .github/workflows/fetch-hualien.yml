@@ -12,6 +12,24 @@ on:
           - "2010"
           - "2023"
           - "both"
+      run_mode:
+        description: 先測試一週，確認後才執行整年
+        required: true
+        default: "one_week_test"
+        type: choice
+        options:
+          - "one_week_test"
+          - "full_year"
+      test_start_date:
+        description: 一週測試開始日期（YYYY-MM-DD）
+        required: true
+        default: "2023-01-01"
+        type: string
+      test_end_date:
+        description: 一週測試結束日期（YYYY-MM-DD）
+        required: true
+        default: "2023-01-07"
+        type: string
 
 permissions:
   contents: write
@@ -42,19 +60,43 @@ jobs:
         shell: bash
         run: |
           for year in ${{ steps.years.outputs.list }}; do
-            python scripts/fetch_procurement.py --year "$year"
+            if [ "${{ inputs.run_mode }}" = "one_week_test" ]; then
+              python scripts/fetch_procurement.py --year "$year" \
+                --data-root test-output \
+                --start-date "${{ inputs.test_start_date }}" \
+                --end-date "${{ inputs.test_end_date }}"
+            else
+              python scripts/fetch_procurement.py --year "$year"
+            fi
           done
       - name: 建立跨年度 CSV
-        run: python scripts/build_exports.py --years ${{ steps.years.outputs.list }}
-      - name: 上傳本次成果
+        shell: bash
+        run: |
+          if [ "${{ inputs.run_mode }}" = "one_week_test" ]; then
+            python scripts/build_exports.py --data-root test-output --years ${{ steps.years.outputs.list }}
+          else
+            python scripts/build_exports.py --years ${{ steps.years.outputs.list }}
+          fi
+      - name: 上傳一週測試成果
+        if: inputs.run_mode == 'one_week_test'
         uses: actions/upload-artifact@v4
         with:
-          name: hualien-procurement-${{ inputs.year }}
+          name: hualien-procurement-${{ inputs.year }}-${{ inputs.run_mode }}
+          path: |
+            test-output/raw/hualien/**
+            test-output/processed/hualien/*.csv
+          retention-days: 30
+      - name: 上傳全年成果
+        if: inputs.run_mode == 'full_year'
+        uses: actions/upload-artifact@v4
+        with:
+          name: hualien-procurement-${{ inputs.year }}-${{ inputs.run_mode }}
           path: |
             data/raw/hualien/**
             data/processed/hualien/*.csv
           retention-days: 30
       - name: 提交可重現資料成果
+        if: inputs.run_mode == 'full_year'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
