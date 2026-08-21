@@ -156,7 +156,7 @@ def read_csv(path: Path) -> list[dict]:
 
 def annual_rows(output: Path, prefix: str) -> list[dict]:
     """讀取 prefix_YYYY.csv；刻意排除 procurement_master.csv 等彙整檔。"""
-    pattern = re.compile(rf"^{re.escape(prefix)}_(\d{4})\.csv$")
+    pattern = re.compile(rf"^{re.escape(prefix)}_(\d{{4}})\.csv$")
     paths = sorted(path for path in output.glob(f"{prefix}_*.csv") if pattern.fullmatch(path.name))
     return [row for path in paths for row in read_csv(path)]
 
