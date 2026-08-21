@@ -1,0 +1,54 @@
+name: 從既有資料產生私人 Excel
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 已經整理完成的年度（例如 2023）
+        required: true
+        default: "2023"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 取出公開資料 repo
+        uses: actions/checkout@v4
+
+      - name: 設定 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安裝 Excel 產生套件
+        run: python -m pip install -r requirements-excel.txt
+
+      - name: 從既有 CSV 建立 Excel
+        run: python scripts/build_excel.py --years "${{ inputs.year }}"
+
+      - name: 取出私人分析 repo
+        uses: actions/checkout@v4
+        with:
+          repository: hakusan0118/taiwan-local-procurement-analysis
+          token: ${{ secrets.ANALYSIS_REPO_TOKEN }}
+          path: private-analysis
+
+      - name: 儲存 Excel 到私人 repo
+        shell: bash
+        run: |
+          cp excel-output/*.xlsx private-analysis/
+          cd private-analysis
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- *.xlsx
+          if git diff --cached --quiet; then
+            echo "Excel 沒有異動"
+          else
+            git commit -m "analysis: update Hualien Excel ${{ inputs.year }}"
+            git push
+          fi
