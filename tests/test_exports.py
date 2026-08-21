@@ -8,6 +8,7 @@ from scripts.build_exports import (
     VENDOR_FIELDS,
     parse_amount,
     rebuild_combined,
+    read_csv,
     roc_to_iso,
     winners,
     write_csv,
@@ -72,9 +73,7 @@ class ExportHelpersTest(unittest.TestCase):
 
             self.assertEqual(rebuild_combined(output), (2, 2, 2))
             self.assertEqual(
-                [row["case_key"] for row in __import__("csv").DictReader(
-                    (output / "procurement_master.csv").open(encoding="utf-8-sig")
-                )],
+                [row["case_key"] for row in read_csv(output / "procurement_master.csv")],
                 ["2010-case", "2023-case"],
             )
 
