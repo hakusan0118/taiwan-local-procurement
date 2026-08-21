@@ -8,6 +8,7 @@ from scripts.build_exports import (
     VENDOR_FIELDS,
     enrich_case,
     extract_road_names,
+    migrate_annual_cases,
     parse_amount,
     quality_sort_key,
     rebuild_combined,
@@ -86,6 +87,24 @@ class ExportHelpersTest(unittest.TestCase):
             ("2011", "20110101", "daily", "", "", "非 JSON 回應"),
         )
 
+    def test_migrate_annual_cases_backfills_old_csv_without_download(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output = Path(temp_dir)
+            old_fields = ["case_key", "year", "announcement_date", "unit_id", "job_number", "title"]
+            write_csv(
+                output / "procurement_2010.csv",
+                old_fields,
+                [{
+                    "case_key": "old-case", "year": 2010, "announcement_date": "20100101",
+                    "unit_id": "3.76.55.51", "job_number": "A1", "title": "中央路路面整修工程",
+                }],
+            )
+            migrate_annual_cases(output)
+            migrated = read_csv(output / "procurement_2010.csv")[0]
+            self.assertEqual(migrated["road_names"], "中央路")
+            self.assertEqual(migrated["road_name_source"], "標案名稱")
+            self.assertEqual(migrated["work_tags"], "路面刨鋪")
+
     def test_rebuild_combined_keeps_every_annual_file(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             output = Path(temp_dir)
@@ -122,4 +141,3 @@ class ExportHelpersTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
