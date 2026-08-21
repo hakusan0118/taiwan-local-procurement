@@ -7,6 +7,7 @@ from scripts.build_exports import (
     QUALITY_FIELDS,
     VENDOR_FIELDS,
     parse_amount,
+    quality_sort_key,
     rebuild_combined,
     read_csv,
     roc_to_iso,
@@ -43,6 +44,18 @@ class ExportHelpersTest(unittest.TestCase):
             "投標廠商:投標廠商2:是否得標": "否",
         }
         self.assertEqual(winners(detail, {}), [("甲公司", "12345678")])
+
+    def test_quality_sort_key_allows_download_errors_without_case_fields(self):
+        error = {
+            "year": 2011,
+            "date": "20110101",
+            "stage": "daily",
+            "issue": "非 JSON 回應",
+        }
+        self.assertEqual(
+            quality_sort_key(error),
+            ("2011", "20110101", "daily", "", "", "非 JSON 回應"),
+        )
 
     def test_rebuild_combined_keeps_every_annual_file(self):
         with tempfile.TemporaryDirectory() as temp_dir:
