@@ -161,6 +161,11 @@ def annual_rows(output: Path, prefix: str) -> list[dict]:
     return [row for path in paths for row in read_csv(path)]
 
 
+def quality_sort_key(row: dict) -> tuple[str, str, str, str, str, str]:
+    """錯誤紀錄可能沒有機關或案號；缺欄位時以空字串排序。"""
+    return tuple(str(row.get(field, "")) for field in ("year", "date", "stage", "unit_id", "job_number", "issue"))
+
+
 def rebuild_combined(output: Path) -> tuple[int, int, int]:
     """由所有年度檔重建跨年度總表，避免單一年份工作流覆蓋舊資料。"""
     cases = annual_rows(output, "procurement")
@@ -168,7 +173,7 @@ def rebuild_combined(output: Path) -> tuple[int, int, int]:
     quality = annual_rows(output, "data_quality")
     cases.sort(key=lambda row: (row["year"], row["announcement_date"], row["unit_id"], row["job_number"]))
     vendors.sort(key=lambda row: (row["year"], row["award_date"], row["case_key"], row["vendor_name"]))
-    quality.sort(key=lambda row: (row["year"], row["date"], row["stage"], row["unit_id"], row["job_number"], row["issue"]))
+    quality.sort(key=quality_sort_key)
     write_csv(output / "procurement_master.csv", CASE_FIELDS, cases)
     write_csv(output / "vendors.csv", VENDOR_FIELDS, vendors)
     write_csv(output / "data_quality.csv", QUALITY_FIELDS, quality)
@@ -199,7 +204,7 @@ def build(years: list[int], root: Path) -> None:
                 year_quality.append({**error, "issue": error.get("error", ""), "raw_file": ""})
         cases.sort(key=lambda row: (row["announcement_date"], row["unit_id"], row["job_number"]))
         year_vendors.sort(key=lambda row: (row["award_date"], row["case_key"], row["vendor_name"]))
-        year_quality.sort(key=lambda row: (row["date"], row["stage"], row["unit_id"], row["job_number"], row["issue"]))
+        year_quality.sort(key=quality_sort_key)
         write_csv(output / f"procurement_{year}.csv", CASE_FIELDS, cases)
         write_csv(output / f"vendors_{year}.csv", VENDOR_FIELDS, year_vendors)
         write_csv(output / f"data_quality_{year}.csv", QUALITY_FIELDS, year_quality)
