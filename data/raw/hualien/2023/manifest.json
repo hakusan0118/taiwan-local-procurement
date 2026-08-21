@@ -1,9 +1,11 @@
 {
   "year": 2023,
+  "start_date": "2023-01-01",
+  "end_date": "2023-12-31",
   "scope_unit_prefix": "3.76.55",
   "announcement_type": "決標公告",
   "decision_count": 2127,
   "error_count": 115,
-  "generated_at_utc": "2026-08-20T10:47:25.978810+00:00",
+  "generated_at_utc": "2026-08-21T04:42:09.448573+00:00",
   "source_attribution": "CC-BY 歐噴, 工程會"
 }
