@@ -6,12 +6,26 @@ on:
       year:
         description: 要整理的年度
         required: true
-        default: "2023"
+        default: "2011"
         type: choice
         options:
           - "2010"
+          - "2011"
+          - "2012"
+          - "2013"
+          - "2014"
+          - "2015"
+          - "2016"
+          - "2017"
+          - "2018"
+          - "2019"
+          - "2020"
+          - "2021"
+          - "2022"
           - "2023"
-          - "both"
+          - "2024"
+          - "2025"
+          - "2026"
       run_mode:
         description: 先測試一週，確認後才執行整年
         required: true
@@ -23,12 +37,12 @@ on:
       test_start_date:
         description: 一週測試開始日期（YYYY-MM-DD）
         required: true
-        default: "2023-01-01"
+        default: "2011-01-01"
         type: string
       test_end_date:
         description: 一週測試結束日期（YYYY-MM-DD）
         required: true
-        default: "2023-01-07"
+        default: "2011-01-07"
         type: string
 
 permissions:
@@ -51,11 +65,7 @@ jobs:
         id: years
         shell: bash
         run: |
-          if [ "${{ inputs.year }}" = "both" ]; then
-            echo "list=2010 2023" >> "$GITHUB_OUTPUT"
-          else
-            echo "list=${{ inputs.year }}" >> "$GITHUB_OUTPUT"
-          fi
+          echo "list=${{ inputs.year }}" >> "$GITHUB_OUTPUT"
       - name: 低頻率下載並快取
         shell: bash
         run: |
