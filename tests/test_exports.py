@@ -6,6 +6,9 @@ from scripts.build_exports import (
     CASE_FIELDS,
     QUALITY_FIELDS,
     VENDOR_FIELDS,
+    enrich_case,
+    extract_road_names,
+    migrate_annual_cases,
     parse_amount,
     quality_sort_key,
     rebuild_combined,
@@ -45,6 +48,33 @@ class ExportHelpersTest(unittest.TestCase):
         }
         self.assertEqual(winners(detail, {}), [("甲公司", "12345678")])
 
+    def test_extract_road_names_from_title(self):
+        self.assertEqual(
+            extract_road_names("花蓮市舊市區中山路、中正路及中華路等道路邊溝清淤工程"),
+            ["中山路", "中正路", "中華路"],
+        )
+        self.assertEqual(
+            extract_road_names("博愛街與節約街口路面整修工程"),
+            ["博愛街", "節約街"],
+        )
+
+    def test_extract_road_names_excludes_generic_road_words(self):
+        self.assertEqual(extract_road_names("市區路面申挖修補回復工程"), [])
+        self.assertEqual(extract_road_names("道路坑洞修補及巡察作業開口契約"), [])
+
+    def test_enrich_case_preserves_source_and_analysis_labels(self):
+        case = {
+            "title": "博愛街路面整修工程開口契約",
+            "performance_location": "花蓮縣－花蓮",
+            "performance_region": "",
+        }
+        enriched = enrich_case(case)
+        self.assertEqual(enriched["road_names"], "博愛街")
+        self.assertEqual(enriched["road_name_source"], "標案名稱")
+        self.assertEqual(enriched["work_tags"], "路面刨鋪")
+        self.assertEqual(enriched["is_road_related"], 1)
+        self.assertEqual(enriched["is_open_contract"], 1)
+
     def test_quality_sort_key_allows_download_errors_without_case_fields(self):
         error = {
             "year": 2011,
@@ -56,6 +86,24 @@ class ExportHelpersTest(unittest.TestCase):
             quality_sort_key(error),
             ("2011", "20110101", "daily", "", "", "非 JSON 回應"),
         )
+
+    def test_migrate_annual_cases_backfills_old_csv_without_download(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output = Path(temp_dir)
+            old_fields = ["case_key", "year", "announcement_date", "unit_id", "job_number", "title"]
+            write_csv(
+                output / "procurement_2010.csv",
+                old_fields,
+                [{
+                    "case_key": "old-case", "year": 2010, "announcement_date": "20100101",
+                    "unit_id": "3.76.55.51", "job_number": "A1", "title": "中央路路面整修工程",
+                }],
+            )
+            migrate_annual_cases(output)
+            migrated = read_csv(output / "procurement_2010.csv")[0]
+            self.assertEqual(migrated["road_names"], "中央路")
+            self.assertEqual(migrated["road_name_source"], "標案名稱")
+            self.assertEqual(migrated["work_tags"], "路面刨鋪")
 
     def test_rebuild_combined_keeps_every_annual_file(self):
         with tempfile.TemporaryDirectory() as temp_dir:
