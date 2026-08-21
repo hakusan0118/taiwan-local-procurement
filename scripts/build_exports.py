@@ -149,15 +149,40 @@ def write_csv(path: Path, fields: list[str], rows: list[dict]) -> None:
         writer.writerows(rows)
 
 
+def read_csv(path: Path) -> list[dict]:
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def annual_rows(output: Path, prefix: str) -> list[dict]:
+    """讀取 prefix_YYYY.csv；刻意排除 procurement_master.csv 等彙整檔。"""
+    pattern = re.compile(rf"^{re.escape(prefix)}_(\d{{4}})\.csv$")
+    paths = sorted(path for path in output.glob(f"{prefix}_*.csv") if pattern.fullmatch(path.name))
+    return [row for path in paths for row in read_csv(path)]
+
+
+def rebuild_combined(output: Path) -> tuple[int, int, int]:
+    """由所有年度檔重建跨年度總表，避免單一年份工作流覆蓋舊資料。"""
+    cases = annual_rows(output, "procurement")
+    vendors = annual_rows(output, "vendors")
+    quality = annual_rows(output, "data_quality")
+    cases.sort(key=lambda row: (row["year"], row["announcement_date"], row["unit_id"], row["job_number"]))
+    vendors.sort(key=lambda row: (row["year"], row["award_date"], row["case_key"], row["vendor_name"]))
+    quality.sort(key=lambda row: (row["year"], row["date"], row["stage"], row["unit_id"], row["job_number"], row["issue"]))
+    write_csv(output / "procurement_master.csv", CASE_FIELDS, cases)
+    write_csv(output / "vendors.csv", VENDOR_FIELDS, vendors)
+    write_csv(output / "data_quality.csv", QUALITY_FIELDS, quality)
+    return len(cases), len(vendors), len(quality)
+
+
 def build(years: list[int], root: Path) -> None:
-    all_cases: list[dict] = []
-    all_vendors: list[dict] = []
-    all_quality: list[dict] = []
     output = root / "processed" / "hualien"
     for year in years:
         year_root = root / "raw" / "hualien" / str(year)
         index = json.loads((year_root / "decision_index.json").read_text(encoding="utf-8"))
         cases: list[dict] = []
+        year_vendors: list[dict] = []
+        year_quality: list[dict] = []
         for record in index:
             raw_path = year_root / "tenders" / (
                 f"{record.get('date')}_{record.get('unit_id')}_{str(record.get('job_number')).replace('/', '_')}.json"
@@ -166,21 +191,20 @@ def build(years: list[int], root: Path) -> None:
             detail = detail_for_record(payload, record.get("date"), record.get("filename"))
             case, vendor_rows, issues = normalize(record, detail, str(raw_path))
             cases.append(case)
-            all_vendors.extend(vendor_rows)
-            all_quality.extend(issues)
-        cases.sort(key=lambda row: (row["announcement_date"], row["unit_id"], row["job_number"]))
-        write_csv(output / f"procurement_{year}.csv", CASE_FIELDS, cases)
-        all_cases.extend(cases)
+            year_vendors.extend(vendor_rows)
+            year_quality.extend(issues)
         error_path = year_root / "errors.json"
         if error_path.exists():
             for error in json.loads(error_path.read_text(encoding="utf-8")):
-                all_quality.append({**error, "issue": error.get("error", ""), "raw_file": ""})
-    all_cases.sort(key=lambda row: (row["year"], row["announcement_date"], row["unit_id"], row["job_number"]))
-    write_csv(output / "procurement_master.csv", CASE_FIELDS, all_cases)
-    write_csv(output / "vendors.csv", VENDOR_FIELDS, all_vendors)
-    write_csv(output / "data_quality.csv", QUALITY_FIELDS, all_quality)
-    print(f"輸出 {len(all_cases)} 案、{len(all_vendors)} 廠商列、{len(all_quality)} 品質問題")
-
+                year_quality.append({**error, "issue": error.get("error", ""), "raw_file": ""})
+        cases.sort(key=lambda row: (row["announcement_date"], row["unit_id"], row["job_number"]))
+        year_vendors.sort(key=lambda row: (row["award_date"], row["case_key"], row["vendor_name"]))
+        year_quality.sort(key=lambda row: (row["date"], row["stage"], row["unit_id"], row["job_number"], row["issue"]))
+        write_csv(output / f"procurement_{year}.csv", CASE_FIELDS, cases)
+        write_csv(output / f"vendors_{year}.csv", VENDOR_FIELDS, year_vendors)
+        write_csv(output / f"data_quality_{year}.csv", QUALITY_FIELDS, year_quality)
+    case_count, vendor_count, quality_count = rebuild_combined(output)
+    print(f"輸出 {case_count} 案、{vendor_count} 廠商列、{quality_count} 品質問題")
 
 def main() -> None:
     parser = argparse.ArgumentParser()
