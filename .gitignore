@@ -4,3 +4,8 @@ __pycache__/
 .DS_Store
 data/raw/
 !data/README.md
+
+# 私人 Excel 分析檔不得提交到公開 repository
+*.xlsx
+*.xls
+excel-output/
