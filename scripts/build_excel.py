@@ -54,7 +54,6 @@ def add_sheet(workbook: Workbook, title: str, rows: list[dict], table_name: str)
         cell.font = HEADER_FONT
         cell.alignment = Alignment(horizontal="center")
     sheet.freeze_panes = "A2"
-    sheet.auto_filter.ref = sheet.dimensions
     table = Table(displayName=table_name, ref=sheet.dimensions)
     table.tableStyleInfo = TableStyleInfo(name="TableStyleMedium2", showRowStripes=True, showColumnStripes=False)
     sheet.add_table(table)
