@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import random
 import time
@@ -59,11 +60,27 @@ def write_json(path: Path, payload: object) -> None:
     temporary.replace(path)
 
 
-def safe_name(record: dict) -> str:
+def safe_name(record: dict, disambiguate: bool = False) -> str:
     date = str(record.get("date", "unknown"))
     unit = str(record.get("unit_id", "unknown")).replace("/", "_")
     job = str(record.get("job_number", "unknown")).replace("/", "_")
-    return f"{date}_{unit}_{job}.json"
+    stem = f"{date}_{unit}_{job}"
+
+    if disambiguate:
+        identity = json.dumps(
+            [
+                record.get("date"),
+                record.get("unit_id"),
+                record.get("job_number"),
+                record.get("filename"),
+            ],
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        digest = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:12]
+        stem = f"{stem}__{digest}"
+
+    return f"{stem}.json"
 
 
 def collect(
@@ -132,8 +149,23 @@ def collect(
     )))
     write_json(year_root / "decision_index.json", decisions)
 
+    name_counts: dict[str, int] = {}
+    for record in decisions:
+        name_key = safe_name(record).casefold()
+        name_counts[name_key] = name_counts.get(name_key, 0) + 1
+
+    colliding_names = {
+        name
+        for name, count in name_counts.items()
+        if count > 1
+    }
+
     for index, record in enumerate(decisions, 1):
-        path = tender_dir / safe_name(record)
+        original_name = safe_name(record)
+        path = tender_dir / safe_name(
+            record,
+            disambiguate=original_name.casefold() in colliding_names,
+        )
         try:
             if not path.exists():
                 payload = request_json(
