@@ -62,6 +62,18 @@ class ExportHelpersTest(unittest.TestCase):
         self.assertEqual(extract_road_names("市區路面申挖修補回復工程"), [])
         self.assertEqual(extract_road_names("道路坑洞修補及巡察作業開口契約"), [])
 
+    def test_extract_road_names_excludes_false_road_names(self):
+        false_titles = (
+            "監控網路設備採購案",
+            "無線網路改善工程",
+            "編號鄉道及市區道路重要路段養護工程",
+            "街路燈維修工程",
+            "教育網路及電路改善案",
+        )
+        for title in false_titles:
+            with self.subTest(title=title):
+                self.assertEqual(extract_road_names(title), [])
+
     def test_enrich_case_preserves_source_and_analysis_labels(self):
         case = {
             "title": "博愛街路面整修工程開口契約",

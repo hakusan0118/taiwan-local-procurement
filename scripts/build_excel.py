@@ -59,10 +59,14 @@ def add_sheet(workbook: Workbook, title: str, rows: list[dict], table_name: str)
     sheet.add_table(table)
     for index, header in enumerate(headers, 1):
         values = [str(sheet.cell(row, index).value or "") for row in range(1, min(sheet.max_row, 300) + 1)]
-        sheet.column_dimensions[get_column_letter(index)].width = min(max(max(map(len, values)) + 2, 10), 42)
+        width = min(max(max(map(len, values)) + 2, 10), 42)
         if header in MONEY_FIELDS:
+            # 金額保留為真正數值，使用一般數字＋千分位，不套貨幣符號。
+            # 至少 18 字元寬，避免 Excel 因欄寬不足顯示 #####。
+            width = max(width, 18)
             for row in range(2, sheet.max_row + 1):
                 sheet.cell(row, index).number_format = '#,##0'
+        sheet.column_dimensions[get_column_letter(index)].width = width
 
 
 def agency_stats(cases: list[dict]) -> list[dict]:
