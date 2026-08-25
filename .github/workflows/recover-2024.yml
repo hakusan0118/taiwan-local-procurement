@@ -1,0 +1,78 @@
+name: 從 Artifact 恢復 2024 資料
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: hualien-procurement-data
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: 取出最新程式與既有資料
+        uses: actions/checkout@v4
+
+      - name: 設定 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 下載已完成的 2024 Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: hualien-procurement-2024-full_year
+          path: recovered
+          repository: hakusan0118/taiwan-local-procurement
+          run-id: 32815182455
+          github-token: ${{ github.token }}
+
+      - name: 只恢復 2024 年度成果
+        shell: bash
+        run: |
+          mkdir -p data/raw/hualien/2024 data/processed/hualien
+          cp recovered/raw/hualien/2024/manifest.json data/raw/hualien/2024/
+          cp recovered/raw/hualien/2024/errors.json data/raw/hualien/2024/
+          cp recovered/raw/hualien/2024/decision_index.json data/raw/hualien/2024/
+          cp recovered/processed/hualien/procurement_2024.csv data/processed/hualien/
+          cp recovered/processed/hualien/vendors_2024.csv data/processed/hualien/
+          cp recovered/processed/hualien/data_quality_2024.csv data/processed/hualien/
+
+      - name: 以最新版規則重建跨年度 CSV
+        run: python scripts/build_exports.py --rebuild-only
+
+      - name: 驗證 2024 與跨年度資料
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          root = Path("data/processed/hualien")
+          with (root / "procurement_2024.csv").open(encoding="utf-8-sig", newline="") as handle:
+              annual = list(csv.DictReader(handle))
+          with (root / "procurement_master.csv").open(encoding="utf-8-sig", newline="") as handle:
+              master = list(csv.DictReader(handle))
+          count_2024 = sum(row.get("year") == "2024" for row in master)
+          print(f"2024 年度檔：{len(annual)} 案")
+          print(f"跨年度總表中的 2024：{count_2024} 案")
+          if len(annual) != 2681 or count_2024 != 2681:
+              raise SystemExit("2024 案件數驗證失敗")
+          PY
+
+      - name: 提交恢復成果
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f -- data/raw/hualien/2024/manifest.json data/raw/hualien/2024/errors.json data/raw/hualien/2024/decision_index.json
+          git add -- data/processed/hualien/*.csv
+          git commit -m "data: recover Hualien procurement 2024 from artifact"
+          git pull --rebase origin main
+          git push
