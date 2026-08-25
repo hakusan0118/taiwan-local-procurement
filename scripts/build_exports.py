@@ -56,7 +56,12 @@ ROAD_PATTERN = re.compile(
 GENERIC_ROAD_NAMES = {
     "道路", "市區道路", "既有道路", "重要道路", "主要道路", "聯絡道路", "連絡道路",
     "產業道路", "農路", "人行道", "步道", "車道", "巷道", "市區路", "花蓮市區路", "等道路", "口路",
+    "重要路", "街路",
 }
+# 先移除不可能是實體道路名稱的固定詞組，避免正則把前面的文字一併吃進來。
+FALSE_ROAD_PHRASES = (
+    "網路", "重要路段", "街路燈", "街路照明", "鐵路", "線路", "電路", "迴路", "水路",
+)
 ROAD_REJECT_WORDS = {
     "年度", "全鄉", "鄉內", "鎮內", "道路", "農路", "管線", "工程", "修復", "改善",
     "附近", "地號", "路容", "單位", "挖掘", "步道", "部落", "重劃區",
@@ -77,8 +82,11 @@ WORK_TAG_RULES = (
 def extract_road_names(text: object) -> list[str]:
     """從公開文字擷取明確路名；無法辨認的「市區道路」等通稱會排除。"""
     value = str(text or "")
+    sanitized = value
+    for phrase in FALSE_ROAD_PHRASES:
+        sanitized = sanitized.replace(phrase, " ")
     found: list[str] = []
-    for match in ROAD_PATTERN.findall(value):
+    for match in ROAD_PATTERN.findall(sanitized):
         name = re.sub(r"^(?:(?:花蓮縣)?花蓮市|舊市區|市區)+", "", match)
         name = re.sub(r"^[與及暨至到]", "", name)
         stem = re.sub(r"(?:大道|路|街)(?:[一二三四五六七八九十百0-9]+段)?(?:[0-9]+巷)?$", "", name)
