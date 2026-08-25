@@ -316,9 +316,22 @@ def build(years: list[int], root: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--years", nargs="+", type=int, required=True)
+    parser.add_argument("--years", nargs="+", type=int)
     parser.add_argument("--data-root", type=Path, default=Path("data"))
+    parser.add_argument(
+        "--rebuild-only",
+        action="store_true",
+        help="只由既有年度 CSV 重算分析欄位與跨年度總表，不下載 API",
+    )
     args = parser.parse_args()
+    if args.rebuild_only:
+        output = args.data_root / "processed" / "hualien"
+        migrate_annual_cases(output)
+        case_count, vendor_count, quality_count = rebuild_combined(output)
+        print(f"重新整理 {case_count} 案、{vendor_count} 廠商列、{quality_count} 品質問題")
+        return
+    if not args.years:
+        parser.error("一般整理模式必須提供 --years；或使用 --rebuild-only")
     build(args.years, args.data_root)
 
 
