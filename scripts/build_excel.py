@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import re
 from collections import defaultdict
 from pathlib import Path
 
@@ -38,6 +39,26 @@ def read_csv(path: Path, number_fields: set[str]) -> list[dict]:
                 except ValueError:
                     pass
     return rows
+
+
+def parse_years(values: list[str]) -> list[int]:
+    """接受 2023、2010 2011、2010~2023、2010-2023 等輸入。"""
+    years: set[int] = set()
+    tokens = re.split(r"[\s,，]+", " ".join(values).strip())
+    for token in filter(None, tokens):
+        match = re.fullmatch(r"(20\d{2})\s*[~～\-–—]\s*(20\d{2})", token)
+        if match:
+            start, end = map(int, match.groups())
+            if start > end:
+                raise ValueError(f"年度範圍起點不得晚於終點：{token}")
+            years.update(range(start, end + 1))
+        elif re.fullmatch(r"20\d{2}", token):
+            years.add(int(token))
+        else:
+            raise ValueError(f"無法辨識年度：{token}；請輸入 2023 或 2010~2023")
+    if not years:
+        raise ValueError("至少需要一個年度")
+    return sorted(years)
 
 
 def add_sheet(workbook: Workbook, title: str, rows: list[dict], table_name: str) -> None:
@@ -86,6 +107,23 @@ def agency_stats(cases: list[dict]) -> list[dict]:
     return sorted(result, key=lambda row: row["total_award_amount"], reverse=True)
 
 
+def annual_stats(cases: list[dict]) -> list[dict]:
+    grouped: dict[int, list[int]] = defaultdict(list)
+    counts: dict[int, int] = defaultdict(int)
+    for row in cases:
+        year = int(row["year"])
+        counts[year] += 1
+        amount = row.get("award_amount")
+        if isinstance(amount, int):
+            grouped[year].append(amount)
+    return [{
+        "year": year,
+        "case_count": counts[year],
+        "total_award_amount": sum(grouped[year]),
+        "average_award_amount": round(sum(grouped[year]) / len(grouped[year])) if grouped[year] else 0,
+    } for year in sorted(counts)]
+
+
 def vendor_stats(vendors: list[dict]) -> list[dict]:
     cases_by_vendor: dict[str, dict[str, int | None]] = defaultdict(dict)
     for row in vendors:
@@ -103,35 +141,64 @@ def vendor_stats(vendors: list[dict]) -> list[dict]:
     return sorted(result, key=lambda row: row["total_case_award_amount"], reverse=True)
 
 
-def build(year: int, data_root: Path, output_dir: Path) -> Path:
+def build(years: list[int], data_root: Path, output_dir: Path) -> Path:
     source = data_root / "processed" / "hualien"
-    cases = [row for row in read_csv(source / f"procurement_{year}.csv", CASE_NUMBER_FIELDS) if row.get("year") == year]
-    vendors = [row for row in read_csv(source / "vendors.csv", VENDOR_NUMBER_FIELDS) if row.get("year") == year]
-    quality = [row for row in read_csv(source / "data_quality.csv", {"year"}) if row.get("year") == year]
+    requested = sorted(set(years))
+    cases: list[dict] = []
+    available: list[int] = []
+    for year in requested:
+        annual = [
+            row for row in read_csv(source / f"procurement_{year}.csv", CASE_NUMBER_FIELDS)
+            if row.get("year") == year
+        ]
+        if annual:
+            cases.extend(annual)
+            available.append(year)
+    missing = [year for year in requested if year not in available]
     if not cases:
-        raise ValueError(f"找不到 {year} 年案件 CSV")
+        raise ValueError(f"找不到指定年度案件 CSV：{', '.join(map(str, requested))}")
+
+    available_set = set(available)
+    vendors = [
+        row for row in read_csv(source / "vendors.csv", VENDOR_NUMBER_FIELDS)
+        if row.get("year") in available_set
+    ]
+    quality = [
+        row for row in read_csv(source / "data_quality.csv", {"year"})
+        if row.get("year") in available_set
+    ]
+    scope = [{
+        "requested_years": f"{requested[0]}~{requested[-1]}" if len(requested) > 1 else str(requested[0]),
+        "included_years": "、".join(map(str, available)),
+        "missing_years": "、".join(map(str, missing)) if missing else "無",
+        "note": "缺少年度不會納入統計；補齊公開 CSV 後重新執行即可。",
+    }]
 
     workbook = Workbook()
     workbook.remove(workbook.active)
-    add_sheet(workbook, "案件主表", cases, f"Cases{year}")
-    add_sheet(workbook, "得標廠商明細", vendors, f"Vendors{year}")
-    add_sheet(workbook, "機關統計", agency_stats(cases), f"Agencies{year}")
-    add_sheet(workbook, "廠商統計", vendor_stats(vendors), f"VendorStats{year}")
-    add_sheet(workbook, "資料品質", quality, f"Quality{year}")
+    add_sheet(workbook, "資料範圍", scope, "DataScope")
+    add_sheet(workbook, "年度統計", annual_stats(cases), "AnnualStats")
+    add_sheet(workbook, "案件主表", cases, "CasesAll")
+    add_sheet(workbook, "得標廠商明細", vendors, "VendorsAll")
+    add_sheet(workbook, "機關統計", agency_stats(cases), "AgenciesAll")
+    add_sheet(workbook, "廠商統計", vendor_stats(vendors), "VendorStatsAll")
+    add_sheet(workbook, "資料品質", quality, "QualityAll")
     output_dir.mkdir(parents=True, exist_ok=True)
-    output = output_dir / f"花蓮縣_{year}_決標分析.xlsx"
+    label = f"{requested[0]}-{requested[-1]}" if len(requested) > 1 else str(requested[0])
+    output = output_dir / f"花蓮縣_{label}_決標分析.xlsx"
     workbook.save(output)
+    if missing:
+        print(f"警告：缺少年度 {', '.join(map(str, missing))}")
     return output
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--years", nargs="+", type=int, required=True)
+    parser.add_argument("--years", nargs="+", required=True)
     parser.add_argument("--data-root", type=Path, default=Path("data"))
     parser.add_argument("--output-dir", type=Path, default=Path("excel-output"))
     args = parser.parse_args()
-    for year in args.years:
-        print(build(year, args.data_root, args.output_dir))
+    print(build(parse_years(args.years), args.data_root, args.output_dir))
 
 
 if __name__ == "__main__":
