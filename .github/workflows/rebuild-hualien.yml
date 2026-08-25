@@ -1,0 +1,65 @@
+name: 重新整理既有花蓮 CSV
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hualien-procurement-data
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 取出資料
+        uses: actions/checkout@v4
+
+      - name: 設定 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 執行道路規則測試
+        run: python -m unittest tests.test_exports
+
+      - name: 只用既有 CSV 重新整理
+        run: python scripts/build_exports.py --rebuild-only
+
+      - name: 驗證假路名已清除
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          path = Path("data/processed/hualien/procurement_master.csv")
+          false_names = {"重要路", "街路"}
+          bad = []
+          with path.open(encoding="utf-8-sig", newline="") as handle:
+              for row in csv.DictReader(handle):
+                  names = {name for name in row.get("road_names", "").split("；") if name}
+                  if names & false_names or any("網路" in name for name in names):
+                      bad.append((row.get("case_key", ""), row.get("road_names", "")))
+          print(f"殘留假路名：{len(bad)} 筆")
+          if bad:
+              for item in bad[:10]:
+                  print(item)
+              raise SystemExit(1)
+          PY
+
+      - name: 提交重新整理成果
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- data/processed/hualien/*.csv
+          if git diff --cached --quiet; then
+            echo "沒有資料異動"
+          else
+            git commit -m "data: rebuild Hualien analysis fields"
+            git push
+          fi
