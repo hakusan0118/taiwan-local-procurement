@@ -1,0 +1,476 @@
+[
+  {
+    "year": "2015",
+    "date": "20150103",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150104",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150111",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150118",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150124",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150125",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150131",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150201",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150208",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150218",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150219",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150220",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150221",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150222",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150301",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150307",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150308",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150315",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150404",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150405",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150406",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150418",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150510",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150531",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150614",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150620",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150621",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150627",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150711",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150718",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150719",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150725",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150726",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150801",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150802",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150808",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150809",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150815",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150816",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150822",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150823",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150829",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150830",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150905",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150906",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150912",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150913",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150919",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150920",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150926",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150927",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20150928",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151003",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151004",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151009",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151010",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151011",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151017",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151018",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151024",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151025",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151031",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151101",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151107",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151108",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151114",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151115",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151121",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151122",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151128",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151129",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151205",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151206",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151212",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151213",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151219",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151220",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151226",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  },
+  {
+    "year": "2015",
+    "date": "20151227",
+    "stage": "daily",
+    "error": "非 JSON 回應：text/html; charset=UTF-8"
+  }
+]
