@@ -6,6 +6,7 @@ from scripts.build_exports import (
     CASE_FIELDS,
     QUALITY_FIELDS,
     VENDOR_FIELDS,
+    build,
     enrich_case,
     extract_road_names,
     migrate_annual_cases,
@@ -20,6 +21,19 @@ from scripts.build_exports import (
 
 
 class ExportHelpersTest(unittest.TestCase):
+    def test_build_keeps_regions_in_separate_directories(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            for region in ("hualien", "taichung"):
+                year_root = root / "raw" / region / "2015"
+                year_root.mkdir(parents=True)
+                (year_root / "decision_index.json").write_text("[]", encoding="utf-8")
+                build([2015], root, region)
+
+            self.assertTrue((root / "processed" / "hualien" / "procurement_2015.csv").exists())
+            self.assertTrue((root / "processed" / "taichung" / "procurement_2015.csv").exists())
+            self.assertFalse((root / "processed" / "hualien" / "procurement_2016.csv").exists())
+
     def test_parse_amount(self):
         self.assertEqual(parse_amount("新臺幣 1,234,567 元"), 1234567)
         self.assertIsNone(parse_amount(""))
