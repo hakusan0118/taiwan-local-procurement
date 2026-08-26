@@ -45,6 +45,16 @@ CSV 採 UTF-8 BOM，Microsoft Excel 可直接開啟。金額缺漏保留空白�
 
 道路分析採保守規則：`road_names` 只擷取標案名稱或履約地點中可辨認的正式路名，`road_name_source` 保留來源；「市區道路」「全鄉道路」等通稱不會冒充特定道路。同一路名重複出現代表可進一步查證，不等於已證明重複開挖或浪費。
 
+## 專案家族分析
+
+`scripts/analyze_project_families.py` 只讀取既有 CSV，不會重新下載 API。分析結果位於：
+
+- `data/analysis/hualien/project_cases.csv`：已確認專案家族中的逐案生命週期
+- `data/analysis/hualien/project_families.csv`：家族跨度、金額軌跡與查證訊號
+- `data/analysis/hualien/project_candidates.csv`：由同機關、相同標題核心找出的待人工確認候選
+
+人工確認的別名規則位於 `config/project_families_hualien.json`。契約變更公告金額在確認其語意前，只能視為金額軌跡，不能直接稱為最終總造價。
+
 ## 合法、低負載原則
 
 - 優先使用公開 API，不繞過登入、CAPTCHA、IP 封鎖或其他存取限制。
