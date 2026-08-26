@@ -141,8 +141,14 @@ def vendor_stats(vendors: list[dict]) -> list[dict]:
     return sorted(result, key=lambda row: row["total_case_award_amount"], reverse=True)
 
 
-def build(years: list[int], data_root: Path, output_dir: Path) -> Path:
-    source = data_root / "processed" / "hualien"
+REGION_LABELS = {
+    "hualien": "花蓮縣",
+    "taichung": "臺中市",
+}
+
+
+def build(years: list[int], data_root: Path, output_dir: Path, region: str = "hualien") -> Path:
+    source = data_root / "processed" / region
     requested = sorted(set(years))
     cases: list[dict] = []
     available: list[int] = []
@@ -185,7 +191,7 @@ def build(years: list[int], data_root: Path, output_dir: Path) -> Path:
     add_sheet(workbook, "資料品質", quality, "QualityAll")
     output_dir.mkdir(parents=True, exist_ok=True)
     label = f"{requested[0]}-{requested[-1]}" if len(requested) > 1 else str(requested[0])
-    output = output_dir / f"花蓮縣_{label}_決標分析.xlsx"
+    output = output_dir / f"{REGION_LABELS[region]}_{label}_決標分析.xlsx"
     workbook.save(output)
     if missing:
         print(f"警告：缺少年度 {', '.join(map(str, missing))}")
@@ -197,8 +203,9 @@ def main() -> None:
     parser.add_argument("--years", nargs="+", required=True)
     parser.add_argument("--data-root", type=Path, default=Path("data"))
     parser.add_argument("--output-dir", type=Path, default=Path("excel-output"))
+    parser.add_argument("--region", choices=sorted(REGION_LABELS), default="hualien")
     args = parser.parse_args()
-    print(build(parse_years(args.years), args.data_root, args.output_dir))
+    print(build(parse_years(args.years), args.data_root, args.output_dir, args.region))
 
 
 if __name__ == "__main__":
