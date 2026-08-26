@@ -1,0 +1,42 @@
+name: 分析花蓮專案家族
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hualien-procurement-analysis
+  cancel-in-progress: false
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 建立專案家族與查證候選
+        run: python scripts/analyze_project_families.py --region hualien
+      - name: 執行回歸測試
+        run: python -m unittest discover -s tests -v
+      - name: 上傳分析成果
+        uses: actions/upload-artifact@v4
+        with:
+          name: hualien-project-family-analysis
+          path: data/analysis/hualien/*.csv
+          retention-days: 30
+      - name: 提交分析成果
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- data/analysis/hualien/*.csv
+          if git diff --cached --quiet; then
+            echo "沒有分析資料異動"
+          else
+            git commit -m "analysis: update Hualien project families"
+            git push
+          fi
