@@ -37,6 +37,7 @@ python scripts/build_exports.py --region hualien --years 2010 2023
 - 機關：臺中市政府及代碼 `3.87` 底下的所屬機關
 - 年度：自 2015 年起
 - 工作流：**整理臺中決標資料**
+- 全年模式會自動按月份依序下載（不平行轟炸 API），全部月份完成後才合併、驗證並提交年度 CSV；可避開單一 job 六小時限制
 - 原始資料：`data/raw/taichung/<year>/`
 - 年度及跨年度 CSV：`data/processed/taichung/`
 - 臺中工作流只會提交 `taichung` 路徑，不會讀寫 `hualien` 成果；花蓮工作流亦同
