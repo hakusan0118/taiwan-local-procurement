@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""低頻率下載並快取花蓮縣地方政府決標公告。僅使用 Python 標準函式庫。"""
+"""低頻率下載並快取指定地方政府的決標公告。僅使用 Python 標準函式庫。"""
 
 from __future__ import annotations
 
@@ -16,6 +16,10 @@ from urllib.request import Request, urlopen
 
 API_BASE = "https://pcc-api.openfun.app/api"
 USER_AGENT = "taiwan-local-procurement/0.1 (+https://github.com/hakusan0118/taiwan-local-procurement)"
+REGION_PREFIXES = {
+    "hualien": "3.76.55",
+    "taichung": "3.87",
+}
 
 
 def request_json(url: str, params: dict[str, str] | None, attempts: int, delay: float) -> dict:
@@ -86,6 +90,7 @@ def safe_name(record: dict, disambiguate: bool = False) -> str:
 def collect(
     year: int,
     root: Path,
+    region: str,
     prefix: str,
     delay: float,
     attempts: int,
@@ -98,7 +103,7 @@ def collect(
         raise ValueError("開始與結束日期必須位於指定年度")
     if range_start > range_end:
         raise ValueError("開始日期不得晚於結束日期")
-    year_root = root / "raw" / "hualien" / str(year)
+    year_root = root / "raw" / region / str(year)
     daily_dir = year_root / "daily"
     tender_dir = year_root / "tenders"
     errors: list[dict[str, str]] = []
@@ -204,14 +209,16 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--year", type=int, required=True, choices=range(2000, 2027))
     parser.add_argument("--data-root", type=Path, default=Path("data"))
-    parser.add_argument("--unit-prefix", default="3.76.55")
+    parser.add_argument("--region", choices=sorted(REGION_PREFIXES), default="hualien")
+    parser.add_argument("--unit-prefix", help="覆寫地區預設機關代碼；一般使用不需設定")
     parser.add_argument("--delay", type=float, default=1.5)
     parser.add_argument("--attempts", type=int, default=5)
     parser.add_argument("--start-date", type=dt.date.fromisoformat)
     parser.add_argument("--end-date", type=dt.date.fromisoformat)
     args = parser.parse_args()
+    unit_prefix = args.unit_prefix or REGION_PREFIXES[args.region]
     collect(
-        args.year, args.data_root, args.unit_prefix, args.delay, args.attempts,
+        args.year, args.data_root, args.region, unit_prefix, args.delay, args.attempts,
         args.start_date, args.end_date,
     )
 

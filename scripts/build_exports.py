@@ -282,10 +282,10 @@ def rebuild_combined(output: Path) -> tuple[int, int, int]:
     return len(cases), len(vendors), len(quality)
 
 
-def build(years: list[int], root: Path) -> None:
-    output = root / "processed" / "hualien"
+def build(years: list[int], root: Path, region: str = "hualien") -> None:
+    output = root / "processed" / region
     for year in years:
-        year_root = root / "raw" / "hualien" / str(year)
+        year_root = root / "raw" / region / str(year)
         index = json.loads((year_root / "decision_index.json").read_text(encoding="utf-8"))
         cases: list[dict] = []
         year_vendors: list[dict] = []
@@ -318,6 +318,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--years", nargs="+", type=int)
     parser.add_argument("--data-root", type=Path, default=Path("data"))
+    parser.add_argument("--region", choices=("hualien", "taichung"), default="hualien")
     parser.add_argument(
         "--rebuild-only",
         action="store_true",
@@ -325,14 +326,14 @@ def main() -> None:
     )
     args = parser.parse_args()
     if args.rebuild_only:
-        output = args.data_root / "processed" / "hualien"
+        output = args.data_root / "processed" / args.region
         migrate_annual_cases(output)
         case_count, vendor_count, quality_count = rebuild_combined(output)
         print(f"重新整理 {case_count} 案、{vendor_count} 廠商列、{quality_count} 品質問題")
         return
     if not args.years:
         parser.error("一般整理模式必須提供 --years；或使用 --rebuild-only")
-    build(args.years, args.data_root)
+    build(args.years, args.data_root, args.region)
 
 
 if __name__ == "__main__":

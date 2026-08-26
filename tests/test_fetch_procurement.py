@@ -101,3 +101,10 @@ def test_same_job_different_source_records_get_distinct_names():
     )
 
     assert first_name != second_name
+
+
+def test_region_prefixes_are_separate():
+    assert fetch_procurement.REGION_PREFIXES["hualien"] == "3.76.55"
+    assert fetch_procurement.REGION_PREFIXES["taichung"] == "3.87"
+    assert not fetch_procurement.is_in_scope("3.87.10", fetch_procurement.REGION_PREFIXES["hualien"])
+    assert not fetch_procurement.is_in_scope("3.76.55.10", fetch_procurement.REGION_PREFIXES["taichung"])
