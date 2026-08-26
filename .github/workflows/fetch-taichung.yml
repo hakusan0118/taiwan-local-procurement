@@ -22,7 +22,7 @@ on:
           - "2025"
           - "2026"
       run_mode:
-        description: 先測試一週，確認後才執行整年
+        description: 先測試一週，確認後才執行逐月整年
         required: true
         default: "one_week_test"
         type: choice
@@ -48,64 +48,138 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  collect:
+  one-week-test:
+    if: inputs.run_mode == 'one_week_test'
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: 低頻率下載並快取
-        shell: bash
+      - name: 低頻率下載一週並快取
         run: |
-          year="${{ inputs.year }}"
-          if [ "${{ inputs.run_mode }}" = "one_week_test" ]; then
-            python scripts/fetch_procurement.py --region taichung --year "$year" \
-              --data-root test-output \
-              --start-date "${{ inputs.test_start_date }}" \
-              --end-date "${{ inputs.test_end_date }}"
-          else
-            today="$(date -u +%F)"
-            current_year="${today%%-*}"
-            if [ "$year" -gt "$current_year" ]; then
-              echo "::error::不能整理未來年度：$year（目前為 $current_year）"
-              exit 1
-            elif [ "$year" -eq "$current_year" ]; then
-              echo "當年度 $year：只下載至 $today"
-              python scripts/fetch_procurement.py --region taichung --year "$year" --end-date "$today"
-            else
-              python scripts/fetch_procurement.py --region taichung --year "$year"
-            fi
-          fi
-      - name: 建立臺中跨年度 CSV
-        shell: bash
-        run: |
-          if [ "${{ inputs.run_mode }}" = "one_week_test" ]; then
-            python scripts/build_exports.py --region taichung --data-root test-output --years "${{ inputs.year }}"
-          else
-            python scripts/build_exports.py --region taichung --years "${{ inputs.year }}"
-          fi
+          python scripts/fetch_procurement.py --region taichung --year "${{ inputs.year }}" \
+            --data-root test-output \
+            --start-date "${{ inputs.test_start_date }}" \
+            --end-date "${{ inputs.test_end_date }}"
+      - name: 建立一週測試 CSV
+        run: python scripts/build_exports.py --region taichung --data-root test-output --years "${{ inputs.year }}"
       - name: 上傳一週測試成果
-        if: inputs.run_mode == 'one_week_test'
         uses: actions/upload-artifact@v4
         with:
-          name: taichung-procurement-${{ inputs.year }}-${{ inputs.run_mode }}
+          name: taichung-procurement-${{ inputs.year }}-one-week-test
           path: |
             test-output/raw/taichung/**
             test-output/processed/taichung/*.csv
           retention-days: 30
-      - name: 上傳全年成果
-        if: inputs.run_mode == 'full_year'
+
+  prepare-full-year:
+    if: inputs.run_mode == 'full_year'
+    runs-on: ubuntu-latest
+    outputs:
+      months: ${{ steps.months.outputs.months }}
+    steps:
+      - id: months
+        name: 決定需要下載的月份
+        shell: bash
+        run: |
+          python - "${{ inputs.year }}" >> "$GITHUB_OUTPUT" <<'PY'
+          import datetime as dt
+          import json
+          import sys
+
+          year = int(sys.argv[1])
+          today = dt.datetime.now(dt.timezone.utc).date()
+          if year > today.year:
+              raise SystemExit(f"不能整理未來年度：{year}")
+          final_month = today.month if year == today.year else 12
+          print("months=" + json.dumps([f"{month:02d}" for month in range(1, final_month + 1)]))
+          PY
+
+  collect-months:
+    if: inputs.run_mode == 'full_year'
+    needs: prepare-full-year
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        month: ${{ fromJSON(needs.prepare-full-year.outputs.months) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - id: dates
+        name: 計算月份起迄日期
+        shell: bash
+        run: |
+          python - "${{ inputs.year }}" "${{ matrix.month }}" >> "$GITHUB_OUTPUT" <<'PY'
+          import calendar
+          import datetime as dt
+          import sys
+
+          year, month = map(int, sys.argv[1:])
+          start = dt.date(year, month, 1)
+          end = dt.date(year, month, calendar.monthrange(year, month)[1])
+          today = dt.datetime.now(dt.timezone.utc).date()
+          if end > today:
+              end = today
+          print(f"start={start.isoformat()}")
+          print(f"end={end.isoformat()}")
+          PY
+      - name: 低頻率下載本月份
+        run: |
+          python scripts/fetch_procurement.py --region taichung --year "${{ inputs.year }}" \
+            --data-root monthly-output \
+            --start-date "${{ steps.dates.outputs.start }}" \
+            --end-date "${{ steps.dates.outputs.end }}"
+      - name: 整理月份 artifact 目錄
+        run: |
+          mkdir -p artifact/raw/taichung
+          cp -a "monthly-output/raw/taichung/${{ inputs.year }}" artifact/raw/taichung/
+      - name: 上傳月份原始資料
         uses: actions/upload-artifact@v4
         with:
-          name: taichung-procurement-${{ inputs.year }}-${{ inputs.run_mode }}
+          name: taichung-${{ inputs.year }}-month-${{ matrix.month }}
+          path: artifact/
+          retention-days: 7
+          if-no-files-found: error
+
+  finalize-full-year:
+    if: inputs.run_mode == 'full_year'
+    needs: collect-months
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 下載全部月份
+        uses: actions/download-artifact@v4
+        with:
+          pattern: taichung-${{ inputs.year }}-month-*
+          path: monthly-artifacts
+      - name: 合併月份並建立臺中跨年度 CSV
+        run: |
+          python scripts/merge_monthly_raw.py \
+            --input-root monthly-artifacts --output-root data \
+            --region taichung --year "${{ inputs.year }}"
+          python scripts/build_exports.py --region taichung --years "${{ inputs.year }}"
+      - name: 檢查年度資料完整性
+        run: python scripts/validate_processed.py --region taichung --year "${{ inputs.year }}" --unit-prefix 3.87
+      - name: 上傳全年成果
+        uses: actions/upload-artifact@v4
+        with:
+          name: taichung-procurement-${{ inputs.year }}-full-year
           path: |
-            data/raw/taichung/**
+            data/raw/taichung/${{ inputs.year }}/**
             data/processed/taichung/*.csv
           retention-days: 30
       - name: 提交臺中可重現資料成果
-        if: inputs.run_mode == 'full_year'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
