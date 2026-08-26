@@ -1,6 +1,6 @@
 # Taiwan Local Procurement
 
-以可追溯、可重現的方式整理臺灣地方政府採購決標資料。第一階段逐年整理花蓮縣地方政府體系 2010–2023 年決標公告，之後再擴充為公共監督儀表板。
+以可追溯、可重現的方式整理臺灣地方政府採購決標資料。目前花蓮與臺中使用完全分離的資料目錄及 GitHub Actions 工作流，之後再擴充為公共監督儀表板。
 
 ## 第一階段範圍
 
@@ -20,7 +20,7 @@
 
 ```bash
 python scripts/fetch_procurement.py --year 2023
-python scripts/build_exports.py --years 2010 2023
+python scripts/build_exports.py --region hualien --years 2010 2023
 ```
 
 ## 資料結構
@@ -31,6 +31,15 @@ python scripts/build_exports.py --years 2010 2023
 - `data/processed/hualien/procurement_master.csv`：跨年度合併主表（含履約地點、路名來源、工程標籤及開口契約標記）
 - `data/processed/hualien/vendors.csv`：標案與得標廠商關聯
 - `data/processed/hualien/data_quality.csv`：失敗日期與資料品質問題
+
+### 臺中資料（與花蓮完全分離）
+
+- 機關：臺中市政府及代碼 `3.87` 底下的所屬機關
+- 年度：自 2015 年起
+- 工作流：**整理臺中決標資料**
+- 原始資料：`data/raw/taichung/<year>/`
+- 年度及跨年度 CSV：`data/processed/taichung/`
+- 臺中工作流只會提交 `taichung` 路徑，不會讀寫 `hualien` 成果；花蓮工作流亦同
 
 CSV 採 UTF-8 BOM，Microsoft Excel 可直接開啟。金額缺漏保留空白，不會填成零。
 
