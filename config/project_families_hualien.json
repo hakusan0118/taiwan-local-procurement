@@ -1,0 +1,38 @@
+{
+  "families": [
+    {
+      "family_id": "hualien_shanhai_theater",
+      "family_name": "原住民族山海劇場暨加路蘭廣場",
+      "include_any": [
+        "山海劇場",
+        "加路蘭廣場"
+      ],
+      "exclude_any": [
+        "山海劇場暨豐羽計畫人才培育"
+      ],
+      "note": "人工確認的專案別名；不包含僅提及加路蘭農路或加路蘭溪的案件。"
+    },
+    {
+      "family_id": "hualien_fengyu",
+      "family_name": "原住民族傳統藝術豐羽計畫",
+      "include_any": [
+        "原住民族傳統藝術豐羽",
+        "豐羽計畫",
+        "豐羽館"
+      ],
+      "exclude_any": [
+        "山海劇場暨豐羽計畫人才培育"
+      ],
+      "note": "人工確認的專案別名。"
+    },
+    {
+      "family_id": "hualien_shanhai_fengyu_shared",
+      "family_name": "山海劇場與豐羽共同支援計畫",
+      "include_any": [
+        "山海劇場暨豐羽計畫人才培育"
+      ],
+      "exclude_any": [],
+      "note": "同時服務兩項建設，獨立歸戶以免在兩個專案中重複加總。"
+    }
+  ]
+}
