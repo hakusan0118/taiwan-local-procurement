@@ -1,0 +1,120 @@
+name: 整理臺中決標資料
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 要整理的年度
+        required: true
+        default: "2015"
+        type: choice
+        options:
+          - "2015"
+          - "2016"
+          - "2017"
+          - "2018"
+          - "2019"
+          - "2020"
+          - "2021"
+          - "2022"
+          - "2023"
+          - "2024"
+          - "2025"
+          - "2026"
+      run_mode:
+        description: 先測試一週，確認後才執行整年
+        required: true
+        default: "one_week_test"
+        type: choice
+        options:
+          - "one_week_test"
+          - "full_year"
+      test_start_date:
+        description: 一週測試開始日期（YYYY-MM-DD）
+        required: true
+        default: "2015-01-01"
+        type: string
+      test_end_date:
+        description: 一週測試結束日期（YYYY-MM-DD）
+        required: true
+        default: "2015-01-07"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: taichung-procurement-data
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 低頻率下載並快取
+        shell: bash
+        run: |
+          year="${{ inputs.year }}"
+          if [ "${{ inputs.run_mode }}" = "one_week_test" ]; then
+            python scripts/fetch_procurement.py --region taichung --year "$year" \
+              --data-root test-output \
+              --start-date "${{ inputs.test_start_date }}" \
+              --end-date "${{ inputs.test_end_date }}"
+          else
+            today="$(date -u +%F)"
+            current_year="${today%%-*}"
+            if [ "$year" -gt "$current_year" ]; then
+              echo "::error::不能整理未來年度：$year（目前為 $current_year）"
+              exit 1
+            elif [ "$year" -eq "$current_year" ]; then
+              echo "當年度 $year：只下載至 $today"
+              python scripts/fetch_procurement.py --region taichung --year "$year" --end-date "$today"
+            else
+              python scripts/fetch_procurement.py --region taichung --year "$year"
+            fi
+          fi
+      - name: 建立臺中跨年度 CSV
+        shell: bash
+        run: |
+          if [ "${{ inputs.run_mode }}" = "one_week_test" ]; then
+            python scripts/build_exports.py --region taichung --data-root test-output --years "${{ inputs.year }}"
+          else
+            python scripts/build_exports.py --region taichung --years "${{ inputs.year }}"
+          fi
+      - name: 上傳一週測試成果
+        if: inputs.run_mode == 'one_week_test'
+        uses: actions/upload-artifact@v4
+        with:
+          name: taichung-procurement-${{ inputs.year }}-${{ inputs.run_mode }}
+          path: |
+            test-output/raw/taichung/**
+            test-output/processed/taichung/*.csv
+          retention-days: 30
+      - name: 上傳全年成果
+        if: inputs.run_mode == 'full_year'
+        uses: actions/upload-artifact@v4
+        with:
+          name: taichung-procurement-${{ inputs.year }}-${{ inputs.run_mode }}
+          path: |
+            data/raw/taichung/**
+            data/processed/taichung/*.csv
+          retention-days: 30
+      - name: 提交臺中可重現資料成果
+        if: inputs.run_mode == 'full_year'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f -- data/raw/taichung/*/manifest.json data/raw/taichung/*/errors.json data/raw/taichung/*/decision_index.json
+          git add -- data/processed/taichung/*.csv
+          if git diff --cached --quiet; then
+            echo "沒有臺中資料異動"
+          else
+            git commit -m "data: update Taichung procurement ${{ inputs.year }}"
+            git push
+          fi
