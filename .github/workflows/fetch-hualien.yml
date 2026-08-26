@@ -71,7 +71,7 @@ jobs:
         run: |
           for year in ${{ steps.years.outputs.list }}; do
             if [ "${{ inputs.run_mode }}" = "one_week_test" ]; then
-              python scripts/fetch_procurement.py --year "$year" \
+              python scripts/fetch_procurement.py --region hualien --year "$year" \
                 --data-root test-output \
                 --start-date "${{ inputs.test_start_date }}" \
                 --end-date "${{ inputs.test_end_date }}"
@@ -84,9 +84,9 @@ jobs:
                 exit 1
               elif [ "$year" -eq "$current_year" ]; then
                 echo "當年度 $year：只下載至 $today"
-                python scripts/fetch_procurement.py --year "$year" --end-date "$today"
+                python scripts/fetch_procurement.py --region hualien --year "$year" --end-date "$today"
               else
-                python scripts/fetch_procurement.py --year "$year"
+                python scripts/fetch_procurement.py --region hualien --year "$year"
               fi
             fi
           done
@@ -94,9 +94,9 @@ jobs:
         shell: bash
         run: |
           if [ "${{ inputs.run_mode }}" = "one_week_test" ]; then
-            python scripts/build_exports.py --data-root test-output --years ${{ steps.years.outputs.list }}
+            python scripts/build_exports.py --region hualien --data-root test-output --years ${{ steps.years.outputs.list }}
           else
-            python scripts/build_exports.py --years ${{ steps.years.outputs.list }}
+            python scripts/build_exports.py --region hualien --years ${{ steps.years.outputs.list }}
           fi
       - name: 上傳一週測試成果
         if: inputs.run_mode == 'one_week_test'
