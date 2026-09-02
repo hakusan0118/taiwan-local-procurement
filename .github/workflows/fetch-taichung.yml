@@ -22,13 +22,14 @@ on:
           - "2025"
           - "2026"
       run_mode:
-        description: 先測試一週，確認後才執行逐月整年
+        description: 執行模式
         required: true
         default: "one_week_test"
         type: choice
         options:
           - "one_week_test"
           - "full_year"
+          - "repair_dates"
       test_start_date:
         description: 一週測試開始日期（YYYY-MM-DD）
         required: true
@@ -38,6 +39,23 @@ on:
         description: 一週測試結束日期（YYYY-MM-DD）
         required: true
         default: "2015-01-07"
+        type: string
+      repair_dates:
+        description: 補抓日期，以空白、逗號或換行分隔（僅 repair_dates 使用）
+        required: false
+        default: |
+          2024-12-23
+          2025-01-15
+          2025-01-22
+          2025-02-19
+          2025-02-20
+          2025-02-21
+          2025-03-17
+          2025-03-18
+          2025-03-19
+          2025-03-28
+          2025-05-27
+          2025-09-10
         type: string
 
 permissions:
@@ -73,6 +91,91 @@ jobs:
             test-output/raw/taichung/**
             test-output/processed/taichung/*.csv
           retention-days: 30
+
+  repair-dates:
+    if: inputs.run_mode == 'repair_dates'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 驗證補抓日期
+        env:
+          REPAIR_DATES: ${{ inputs.repair_dates }}
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import os
+          import re
+          from pathlib import Path
+
+          values = sorted(set(filter(None, re.split(r"[\s,]+", os.environ.get("REPAIR_DATES", "").strip()))))
+          if not values:
+              raise SystemExit("repair_dates 模式必須填入至少一個日期")
+          today = dt.datetime.now(dt.timezone.utc).date()
+          years = set()
+          for value in values:
+              try:
+                  date = dt.date.fromisoformat(value)
+              except ValueError as exc:
+                  raise SystemExit(f"日期格式錯誤：{value}（必須為 YYYY-MM-DD）") from exc
+              if date > today:
+                  raise SystemExit(f"不能補抓未來日期：{value}")
+              annual = Path(f"data/processed/taichung/procurement_{date.year}.csv")
+              if not annual.exists():
+                  raise SystemExit(f"尚無 {date.year} 年年度資料，不能使用日期修補：{annual}")
+              years.add(str(date.year))
+          Path("repair-dates.txt").write_text("\n".join(values) + "\n", encoding="utf-8")
+          Path("repair-years.txt").write_text("\n".join(sorted(years)) + "\n", encoding="utf-8")
+          print("準備補抓：" + "、".join(values))
+          PY
+      - name: 逐日低頻率補抓並建立暫存 CSV
+        shell: bash
+        run: |
+          while IFS= read -r repair_date; do
+            repair_year="${repair_date:0:4}"
+            python scripts/fetch_procurement.py --region taichung --year "$repair_year" \
+              --data-root "repair-runs/$repair_date" \
+              --start-date "$repair_date" --end-date "$repair_date"
+            python scripts/build_exports.py --region taichung \
+              --data-root "repair-runs/$repair_date" --years "$repair_year"
+          done < repair-dates.txt
+      - name: 安全合併回年度資料
+        run: |
+          python scripts/apply_date_repairs.py --region taichung --data-root data \
+            --repair-root repair-runs --dates-file repair-dates.txt
+          while IFS= read -r repair_year; do
+            python scripts/validate_processed.py --region taichung \
+              --year "$repair_year" --unit-prefix 3.87
+          done < repair-years.txt
+      - name: 上傳補抓成果
+        uses: actions/upload-artifact@v4
+        with:
+          name: taichung-procurement-date-repairs
+          path: |
+            repair-dates.txt
+            repair-runs/**
+            data/processed/taichung/*.csv
+          retention-days: 30
+      - name: 提交補抓成果
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          while IFS= read -r repair_year; do
+            git add -f -- "data/raw/taichung/$repair_year/manifest.json" \
+              "data/raw/taichung/$repair_year/errors.json" \
+              "data/raw/taichung/$repair_year/decision_index.json"
+          done < repair-years.txt
+          git add -- data/processed/taichung/*.csv
+          if git diff --cached --quiet; then
+            echo "沒有臺中資料異動"
+          else
+            git commit -m "data: repair Taichung procurement dates"
+            git push
+          fi
 
   prepare-full-year:
     if: inputs.run_mode == 'full_year'
