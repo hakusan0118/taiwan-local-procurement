@@ -1261,3 +1261,194 @@
 2024,20241222,daily,,,非 JSON 回應：text/html; charset=UTF-8,
 2024,20241223,daily,,,非 JSON 回應：text/html; charset=UTF-8,
 2024,20241228,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250101,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250104,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250105,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250107,normalize,3.87.13.3,1131213-01,找不到對應案件詳情,data/raw/taichung/2025/tenders/20250107_3.87.13.3_1131213-01.json
+2025,20250107,normalize,3.87.13.3,1131213-01,找不到對應案件詳情,data/raw/taichung/2025/tenders/20250107_3.87.13.3_1131213-01.json
+2025,20250107,normalize,3.87.13.3,1131213-01,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250107_3.87.13.3_1131213-01.json
+2025,20250107,normalize,3.87.13.3,1131213-01,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250107_3.87.13.3_1131213-01.json
+2025,20250108,normalize,3.87.33.39,113050,找不到對應案件詳情,data/raw/taichung/2025/tenders/20250108_3.87.33.39_113050.json
+2025,20250108,normalize,3.87.33.39,113050,找不到對應案件詳情,data/raw/taichung/2025/tenders/20250108_3.87.33.39_113050.json
+2025,20250108,normalize,3.87.33.39,113050,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250108_3.87.33.39_113050.json
+2025,20250108,normalize,3.87.33.39,113050,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250108_3.87.33.39_113050.json
+2025,20250109,normalize,3.87.15,N1131115140,找不到對應案件詳情,data/raw/taichung/2025/tenders/20250109_3.87.15_N1131115140.json
+2025,20250109,normalize,3.87.15,N1131115140,找不到對應案件詳情,data/raw/taichung/2025/tenders/20250109_3.87.15_N1131115140.json
+2025,20250109,normalize,3.87.15,N1131115140,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250109_3.87.15_N1131115140.json
+2025,20250109,normalize,3.87.15,N1131115140,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250109_3.87.15_N1131115140.json
+2025,20250111,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250112,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250115,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250118,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250119,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250122,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250125,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250126,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250127,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250128,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250129,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250130,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250131,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250201,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250202,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250209,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250215,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250216,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250219,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250220,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250221,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250222,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250223,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250228,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250301,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250302,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250308,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250309,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250315,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250316,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250317,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250318,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250319,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250322,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250323,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250328,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250329,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250330,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250403,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250404,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250405,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250406,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250412,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250413,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250414,normalize,3.87.33.40,114010,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250414_3.87.33.40_114010.json
+2025,20250414,normalize,3.87.33.40,114011,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250414_3.87.33.40_114011.json
+2025,20250414,normalize,3.87.33.40,114012,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250414_3.87.33.40_114012.json
+2025,20250414,normalize,3.87.33.40,114014,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250414_3.87.33.40_114014.json
+2025,20250414,normalize,3.87.33.40,114015,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250414_3.87.33.40_114015.json
+2025,20250414,normalize,3.87.33.40,114016,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250414_3.87.33.40_114016.json
+2025,20250416,normalize,3.87.33.40,114003,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250416_3.87.33.40_114003.json
+2025,20250416,normalize,3.87.33.40,114004,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250416_3.87.33.40_114004.json
+2025,20250417,normalize,3.87.33.40,114005,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250417_3.87.33.40_114005.json
+2025,20250417,normalize,3.87.33.40,114006,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250417_3.87.33.40_114006.json
+2025,20250417,normalize,3.87.33.40,114007,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250417_3.87.33.40_114007.json
+2025,20250419,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250420,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250426,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250427,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250501,normalize,3.87.33.40,114036,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250501_3.87.33.40_114036.json
+2025,20250502,normalize,3.87.33.40,114031,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250502_3.87.33.40_114031.json
+2025,20250502,normalize,3.87.33.40,114032,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250502_3.87.33.40_114032.json
+2025,20250502,normalize,3.87.33.40,114034,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250502_3.87.33.40_114034.json
+2025,20250503,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250504,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250505,normalize,3.87.33.40,114035,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250505_3.87.33.40_114035.json
+2025,20250507,normalize,3.87.33.40,114025,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250507_3.87.33.40_114025.json
+2025,20250507,normalize,3.87.33.40,114026,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250507_3.87.33.40_114026.json
+2025,20250507,normalize,3.87.33.40,114027,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250507_3.87.33.40_114027.json
+2025,20250507,normalize,3.87.33.40,114028,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250507_3.87.33.40_114028.json
+2025,20250507,normalize,3.87.33.40,114029,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250507_3.87.33.40_114029.json
+2025,20250507,normalize,3.87.33.40,114030,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250507_3.87.33.40_114030.json
+2025,20250510,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250511,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250517,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250518,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250525,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250527,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250530,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250531,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250601,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250607,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250608,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250614,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250615,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250621,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250622,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250628,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250629,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250705,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250706,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250712,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250713,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250719,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250720,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250727,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250802,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250803,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250807,normalize,3.87.33.40,114090,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250807_3.87.33.40_114090.json
+2025,20250807,normalize,3.87.33.40,114091,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250807_3.87.33.40_114091.json
+2025,20250807,normalize,3.87.33.40,114097,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250807_3.87.33.40_114097.json
+2025,20250807,normalize,3.87.5.42,1140725,缺少得標廠商,data/raw/taichung/2025/tenders/20250807_3.87.5.42_1140725.json
+2025,20250808,normalize,3.87.33.40,114089,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250808_3.87.33.40_114089.json
+2025,20250808,normalize,3.87.33.40,114092,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250808_3.87.33.40_114092.json
+2025,20250808,normalize,3.87.33.40,114093,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250808_3.87.33.40_114093.json
+2025,20250808,normalize,3.87.33.40,114094,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250808_3.87.33.40_114094.json
+2025,20250808,normalize,3.87.33.40,114096,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250808_3.87.33.40_114096.json
+2025,20250809,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250810,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250811,normalize,3.87.33.40,114088,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250811_3.87.33.40_114088.json
+2025,20250811,normalize,3.87.33.40,114095,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250811_3.87.33.40_114095.json
+2025,20250811,normalize,3.87.33.40,114098,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20250811_3.87.33.40_114098.json
+2025,20250816,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250817,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250823,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250824,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250830,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250831,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250906,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250907,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250910,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250913,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250914,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250920,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250921,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250927,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250928,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20250929,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251003,normalize,3.87.33.40,114116,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251003_3.87.33.40_114116.json
+2025,20251003,normalize,3.87.33.40,114119,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251003_3.87.33.40_114119.json
+2025,20251003,normalize,3.87.33.40,114126,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251003_3.87.33.40_114126.json
+2025,20251004,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251005,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251006,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251010,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251011,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251012,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251014,normalize,3.87.33.40,114114,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251014_3.87.33.40_114114.json
+2025,20251014,normalize,3.87.33.40,114115,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251014_3.87.33.40_114115.json
+2025,20251014,normalize,3.87.33.40,114117,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251014_3.87.33.40_114117.json
+2025,20251014,normalize,3.87.33.40,114118,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251014_3.87.33.40_114118.json
+2025,20251014,normalize,3.87.33.40,114120,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251014_3.87.33.40_114120.json
+2025,20251014,normalize,3.87.33.40,114121,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251014_3.87.33.40_114121.json
+2025,20251014,normalize,3.87.33.40,114122,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251014_3.87.33.40_114122.json
+2025,20251014,normalize,3.87.33.40,114125,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251014_3.87.33.40_114125.json
+2025,20251018,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251019,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251024,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251025,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251026,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251101,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251102,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251108,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251109,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251115,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251116,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251120,normalize,3.87.33.40,114152,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251120_3.87.33.40_114152.json
+2025,20251120,normalize,3.87.33.40,114153,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251120_3.87.33.40_114153.json
+2025,20251122,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251123,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251129,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251130,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251203,normalize,3.87.33.40,114154,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251203_3.87.33.40_114154.json
+2025,20251204,normalize,3.87.33.40,114150,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251204_3.87.33.40_114150.json
+2025,20251204,normalize,3.87.33.40,114151,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251204_3.87.33.40_114151.json
+2025,20251205,normalize,3.87.33.40,114149,缺少可解析的決標金額,data/raw/taichung/2025/tenders/20251205_3.87.33.40_114149.json
+2025,20251206,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251207,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251213,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251214,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251220,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251221,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251225,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251227,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251228,daily,,,非 JSON 回應：text/html; charset=UTF-8,
+2025,20251231,normalize,3.87.14,114A10,缺少得標廠商,data/raw/taichung/2025/tenders/20251231_3.87.14_114A10.json
