@@ -43,19 +43,7 @@ on:
       repair_dates:
         description: 補抓日期，以空白、逗號或換行分隔（僅 repair_dates 使用）
         required: false
-        default: |
-          2024-12-23
-          2025-01-15
-          2025-01-22
-          2025-02-19
-          2025-02-20
-          2025-02-21
-          2025-03-17
-          2025-03-18
-          2025-03-19
-          2025-03-28
-          2025-05-27
-          2025-09-10
+        default: "2024-12-23, 2025-01-15, 2025-01-22, 2025-02-19, 2025-02-20, 2025-02-21, 2025-03-17, 2025-03-18, 2025-03-19, 2025-03-28, 2025-05-27, 2025-09-10"
         type: string
 
 permissions:
@@ -111,9 +99,13 @@ jobs:
           import re
           from pathlib import Path
 
-          values = sorted(set(filter(None, re.split(r"[\s,]+", os.environ.get("REPAIR_DATES", "").strip()))))
+          raw = os.environ.get("REPAIR_DATES", "").strip()
+          values = sorted(set(re.findall(r"\d{4}-\d{2}-\d{2}", raw)))
           if not values:
               raise SystemExit("repair_dates 模式必須填入至少一個日期")
+          leftover = re.sub(r"\d{4}-\d{2}-\d{2}|[\s,]+", "", raw)
+          if leftover:
+              raise SystemExit(f"repair_dates 含有無法辨識的內容：{leftover}")
           today = dt.datetime.now(dt.timezone.utc).date()
           years = set()
           for value in values:
